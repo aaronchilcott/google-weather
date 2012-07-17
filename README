@@ -1,0 +1,63 @@
+These basic instructions assume that you already have:
+1. PHP version >= 5.3 installed.
+2. Along with a vanilla apache2 installation which has mod_rewrite enabled. 
+3. This project assumes it will be the only apache web application running. If it is not, you will need to edit the projects apache conf to fix this.
+4. Pear (for unit testing), specifically phpunit/PHP_CodeCoverage
+5. PhpUnit (for unit testing)
+
+Install
+
+1. Deploy the package in to /var/google-weather-test so that this README resides in the root of the directory.
+3. Remove the default apache configuration from the apache sites-enabled directory (e.g. /etc/apache2/sites-enabled) if it exists. 
+2. Symlink the config file: /var/google-weather-test/conf/apache.conf to the apache sites-enabled directory. e.g. in /etc/apache2/sites-enabled.
+3. Depending on your apache configuration, you may need to make additional changes to the file: /var/google-weather-test/conf/apache.conf to add a virtual host (if you need one). 
+4. Reload apache
+4. Browse to the location of the apache host and append the URI /googleWeather. e.g. http://localhost/googleWeather
+
+
+Project notes
+
+Boundaries for this project are imposed by a brief that is not included with these project files.
+
+Web framework
+
+This example uses a web framework called Swiftlet (https://github.com/ElbertF/Swiftlet). Swiftlet was chosen for this test because of it's relative simplicity.
+
+Program flow
+
+:Start
+Browser requests index page.
+Server receives request.
+Request is tested for data indicating a form submit. 
+If it is determined that a form submit did not occur:
+   Build an HTML document containing a web form with a text input element and a submit button element.
+   Server sends document to browser and browser renders and displays content to human.
+   Human enters text in to the presented text input element and clicks clicks submit button element.
+   GOTO Start
+Else
+   Text from the text input is extracted from the data.
+   Construct a query string including the sanitized input text.
+   Send request to google.
+   Receive response
+   Validate response:
+      If returned data is zero length.
+         Display 503 error document (condition 1)
+      Else if returned data is not XML or not well formed XML.
+         Display 503 error document (condition 2)
+      Else Parse the XML:
+         If the XML is not the expected structure.
+            Display 503 error document (condition 3)
+         Else
+            Response is valid, continue with routine.
+   Transform the data to objectify it.
+   Normalize the data (not required, but helpful to ease transitions to new versions)
+   Build an HTML document containing the transformed response from google.
+   Send the response back to the browser.
+   
+   
+   
+
+
+
+
+
